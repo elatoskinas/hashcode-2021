@@ -4,12 +4,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class Solver {
+import data.Problem;
+import data.Solution;
+import solvers.Score;
+import solvers.Solver;
+import solvers.TrivialSolver;
+
+public class App {
 
   // Input files to read from
   static String[] inputFileNames = {
       "sample.txt"
   };
+
+  static Solver solver = new TrivialSolver();
 
   public static void main(String[] args) throws Exception {
     double totalScore = 0L;
@@ -22,9 +30,9 @@ public class Solver {
       Problem problem = parseInput("input/" + inputFileName);
 
       System.out.println("Solving");
-      Solution solution = solve(problem);
+      Solution solution = solver.solve(problem);
 
-      double score = score(solution);
+      double score = Score.score(solution);
       totalScore += score;
 
       System.out.println("Writing solution");
@@ -39,10 +47,6 @@ public class Solver {
 
     System.out.println("Total score: " + totalScore);
     System.out.println("Total time: " + totalTime);
-  }
-
-  private static Solution solve(Problem problem) {
-    return new Solution();
   }
 
   private static Problem parseInput(String inputFileName) {
@@ -77,9 +81,5 @@ public class Solver {
     } catch (IOException e) {
       e.printStackTrace();
     }
-  }
-
-  private static Double score(Solution solution) {
-    return 0.0;
   }
 }
