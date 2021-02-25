@@ -98,7 +98,7 @@ public class ProblemSolver implements Solver {
         // 4. Normalize frequencies
         for (var entry : map.entrySet()) {
             double MAGIC_CONSTANT = 10.0;
-            double divisionFactor = Math.sqrt(entry.getValue().size() * 1.0 * (problem.duration / problem.graph.size())) * MAGIC_CONSTANT;
+            double divisionFactor = Math.sqrt(entry.getValue().size() * 1.0) * MAGIC_CONSTANT;
 
             for (int index = 0; index < entry.getValue().size(); ++index) {
                 entry.getValue().get(index).duration = Math.max(Math.min((int) (entry.getValue().get(index).duration / divisionFactor), 10), 1);
