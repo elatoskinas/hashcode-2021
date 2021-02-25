@@ -13,21 +13,21 @@ import data.Solution;
 import data.TrafficLight;
 import solvers.Score;
 import solvers.Solver;
-import solvers.TrivialSolver;
+import solvers.ProblemSolver;
 
 public class App {
 
   // Input files to read from
   static String[] inputFileNames = {
       "a.txt",
-      // "b.txt",
-      // "c.txt",
-      // "d.txt",
-      // "e.txt",
-      // "f.txt"
+      "b.txt",
+      "c.txt",
+      "d.txt",
+      "e.txt",
+      "f.txt"
   };
 
-  static Solver solver = new TrivialSolver();
+  static Solver solver = new ProblemSolver();
 
   public static void main(String[] args) throws Exception {
     double totalScore = 0L;
@@ -111,7 +111,7 @@ public class App {
       }
 
       inputReader.close();
-      return new Problem();
+      return problem;
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
