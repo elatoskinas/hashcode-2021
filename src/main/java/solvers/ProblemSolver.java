@@ -63,8 +63,6 @@ public class ProblemSolver implements Solver {
                 }
             }
         }
-        
-        System.out.println(streetNamesCovered);
 
         HashMap<Integer, List<TrafficLight>> map = new HashMap<>();
 
@@ -80,6 +78,7 @@ public class ProblemSolver implements Solver {
                     Node coveredIntersection = edgeEntry.getValue();
                     List<TrafficLight> intersectionLights = map.getOrDefault(coveredIntersection.id, new ArrayList<>());
                     int frequency = streetNamesCovered.get(streetName);
+                    frequency = Math.min(10, frequency);
                     intersectionLights.add(new TrafficLight(streetName, frequency));
                     map.put(coveredIntersection.id, intersectionLights);
                 }
