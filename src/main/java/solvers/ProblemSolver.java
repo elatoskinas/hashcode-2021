@@ -7,6 +7,8 @@ import data.Solution;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +71,7 @@ public class ProblemSolver implements Solver {
         // 3. Update all traffic lights
         for (var entry : problem.graph.entrySet()) {
             Node node = entry.getValue();
-            
+
             for (var edgeEntry : node.edges.entrySet()) {
                 String streetName = edgeEntry.getKey();
 
@@ -77,11 +79,23 @@ public class ProblemSolver implements Solver {
                 if (streetNamesCovered.containsKey(streetName)) {
                     Node coveredIntersection = edgeEntry.getValue();
                     List<TrafficLight> intersectionLights = map.getOrDefault(coveredIntersection.id, new ArrayList<>());
+
+                    int streetCost = problem.streetCosts.get(streetName);
                     int frequency = streetNamesCovered.get(streetName);
-                    frequency = Math.min(10, frequency);
+
                     intersectionLights.add(new TrafficLight(streetName, frequency));
                     map.put(coveredIntersection.id, intersectionLights);
                 }
+            }
+        }
+
+        // 4. Normalize frequencies
+        for (var entry : map.entrySet()) {
+            double MAGIC_CONSTANT = 6.0;
+            int divisionFactor = (int) (Math.sqrt(entry.getValue().size() * 1.0) * MAGIC_CONSTANT);
+
+            for (int index = 0; index < entry.getValue().size(); ++index) {
+                entry.getValue().get(index).duration = Math.max(Math.min(entry.getValue().get(index).duration / divisionFactor, 10), 1);
             }
         }
 
