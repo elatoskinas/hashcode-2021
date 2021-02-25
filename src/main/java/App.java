@@ -42,7 +42,7 @@ public class App {
       System.out.println("Solving");
       Solution solution = solver.solve(problem);
 
-      double score = Score.score(solution);
+      double score = Score.score(solution, problem);
       totalScore += score;
 
       System.out.println("Writing solution");

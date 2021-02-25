@@ -36,6 +36,7 @@ public class ProblemSolver implements Solver {
     public Solution solve(Problem problem) {
 
         Map<String, Integer> streetNamesCovered = new HashMap<>();
+        Map<String, Integer> streetDistances = new HashMap<>();
 
         // 1. Filter cars by path length <= D
         // Map.Entry<Integer, List<String>>
@@ -63,6 +64,11 @@ public class ProblemSolver implements Solver {
                 for (String street : carStreetNames) {
                     streetNamesCovered.put(street, streetNamesCovered.getOrDefault(street, 0) + 1);
                 }
+
+                for (int i = 0; i < path.size(); ++i) {
+                    streetDistances.put(path.get(i),
+                                        Math.min(i, streetDistances.getOrDefault(path.get(i), Integer.MAX_VALUE)));
+                }
             }
         }
 
@@ -81,7 +87,7 @@ public class ProblemSolver implements Solver {
                     List<TrafficLight> intersectionLights = map.getOrDefault(coveredIntersection.id, new ArrayList<>());
 
                     int streetCost = problem.streetCosts.get(streetName);
-                    int frequency = streetNamesCovered.get(streetName);
+                    int frequency = Math.max(streetNamesCovered.get(streetName) - (streetCost / 3), 1);
 
                     intersectionLights.add(new TrafficLight(streetName, frequency));
                     map.put(coveredIntersection.id, intersectionLights);
@@ -91,12 +97,21 @@ public class ProblemSolver implements Solver {
 
         // 4. Normalize frequencies
         for (var entry : map.entrySet()) {
-            double MAGIC_CONSTANT = 6.0;
-            int divisionFactor = (int) (Math.sqrt(entry.getValue().size() * 1.0) * MAGIC_CONSTANT);
+            double MAGIC_CONSTANT = 10.0;
+            double divisionFactor = Math.sqrt(entry.getValue().size() * 1.0 * (problem.duration / problem.graph.size())) * MAGIC_CONSTANT;
 
             for (int index = 0; index < entry.getValue().size(); ++index) {
-                entry.getValue().get(index).duration = Math.max(Math.min(entry.getValue().get(index).duration / divisionFactor, 10), 1);
+                entry.getValue().get(index).duration = Math.max(Math.min((int) (entry.getValue().get(index).duration / divisionFactor), 10), 1);
             }
+
+            // Sort by shortest (inital) distances to streets
+            // [active traffic lights that are closest to any given car]
+            entry.getValue().sort(new Comparator<TrafficLight>(){
+                @Override
+                public int compare(TrafficLight t1, TrafficLight t2) {
+                    return Integer.compare(streetDistances.get(t1.streetname), streetDistances.get(t2.streetname));
+                }
+            });
         }
 
         return new Solution(map);
